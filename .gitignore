@@ -1,0 +1,10 @@
+# OSX
+#
+.DS_Store
+
+# Node
+node_modules
+npm-debug.log
+
+*.bak
+local.js
