@@ -60,16 +60,19 @@ function listAllRepos(accessToken, user) {
  */
 function getRepo(accessToken, repoName) {
   const ghRepo = gh.client(accessToken).repo(repoName);
-  return Q.ninvoke(ghRepo, 'info').spread(R.nthArg(1));
+  return Q.ninvoke(ghRepo, 'info').spread(R.nthArg(0));
 }
 
 function createWebhook(accessToken, repoName, webhookUrl) {
   const ghRepo = gh.client(accessToken).repo(repoName);
   return Q.ninvoke(ghRepo, 'hooks')
     .spread(function (hooks) {
+      console.log('repo %s has %d hooks', repoName, hooks.length);
+
       const hookUrlEq = R.compose(R.propEq('url', webhookUrl), R.prop('config'));
       const existHook = R.find(hookUrlEq, hooks);
       if (existHook) {
+        console.log('webhook %s already exists', webhookUrl);
         return existHook;
       }
 
@@ -82,7 +85,7 @@ function createWebhook(accessToken, repoName, webhookUrl) {
         events: ['push', 'issues'],
       });
     })
-    .spread(R.nthArg(1));
+    .spread(R.nthArg(0));
 }
 
 exports.listAllRepos = listAllRepos;
