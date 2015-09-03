@@ -14,11 +14,21 @@ function listRepos(req, res) {
     });
 }
 
+/**
+ * Create project bound to the repo.
+ */
 function bindRepo(req, res) {
   const repoName = req.query.repo;
-  gh.getRepo(req.user.accessToken, repoName)
+  const accessToken = req.user.accessToken;
+
+  gh.getRepo(accessToken, repoName)
     .then(function (repo) {
       return prj.createByRepo(repo);
+    })
+    .then(function (p) {
+      // add webhook to the repo
+      const hookUrl = prj.getWebhookUrl(p);
+      return gh.createWebhook(accessToken, p.get('name'), hookUrl);
     })
     .then(function () {
       res.send('OK');

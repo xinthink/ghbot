@@ -1,5 +1,6 @@
 /*global AV */
 const crypto = require('crypto');
+const localCfg = require('cloud/local');
 
 const Project = AV.Object.extend('Project');
 
@@ -32,4 +33,9 @@ function createByRepo(repo) {
     });
 }
 
+function getWebhookUrl(prj) {
+  return localCfg.av_base_url + '/ghhook/' + prj.id;
+}
+
 exports.createByRepo = createByRepo;
+exports.getWebhookUrl = getWebhookUrl;
