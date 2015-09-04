@@ -1,5 +1,5 @@
 const gh = require('cloud/github');
-const prj = require('cloud/model').project;
+const model = require('cloud/model');
 
 /**
  * Listing GitHub repos.
@@ -23,11 +23,11 @@ function bindRepo(req, res) {
 
   gh.getRepo(accessToken, repoName)
     .then(function (repo) {
-      return prj.createByRepo(repo);
+      return model.Project.createByRepo(repo);
     })
     .then(function (p) {
       // add webhook to the repo
-      const hookUrl = prj.getWebhookUrl(p);
+      const hookUrl = p.getWebhookUrl();
       return gh.createWebhook(accessToken, p.get('name'), hookUrl);
     })
     .then(function () {
@@ -38,7 +38,7 @@ function bindRepo(req, res) {
     });
 }
 
-module.exports = function(app, ensureAuthenticated) {
+exports.installRoutes = function(app, ensureAuthenticated) {
   app.get('/repo/list', ensureAuthenticated, listRepos);
   app.get('/repo/bind', ensureAuthenticated, bindRepo);
 };

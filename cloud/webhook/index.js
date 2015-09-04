@@ -1,12 +1,30 @@
+const util = require('cloud/util');
+const issueSvc = require('cloud/service').issue;
+
 /**
  * Handle GitHub events.
  */
 function onGitHubEvents(req, res) {
-  const key = req.params.key;
-  console.log(key, req);
+  const id = req.params.id;
+  const eventName = req.headers['X-Github-Event'] || req.headers['x-github-event'];
+  var event = req.body.payload || req.body;
+
+  if (util.isString(event)) {
+    event = JSON.parse(event);
+  }
+
+  switch (eventName) {
+    case 'issues':
+      issueSvc.onIssuesEvent(id, event);
+      break;
+    default:
+      console.log('ignored event', eventName);
+      break;
+  }
+
   res.send();
 }
 
 module.exports = function(app) {
-  app.post('/ghhook/:key', onGitHubEvents);
+  app.post('/ghhook/:id', onGitHubEvents);
 };

@@ -80,6 +80,7 @@ function createWebhook(accessToken, repoName, webhookUrl) {
         name: 'web',
         config: {
           url: webhookUrl,
+          'content_type': 'json',
         },
         active: true,
         events: ['push', 'issues'],

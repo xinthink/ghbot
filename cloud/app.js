@@ -12,8 +12,8 @@ const localCfg = require('cloud/local');
 // App 全局配置
 app.set('views', 'cloud/views');   // 设置模板目录
 app.set('view engine', 'ejs');    // 设置 template 引擎
-app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cookieSession({
   keys: localCfg.cookieKeys,
