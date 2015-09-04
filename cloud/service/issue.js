@@ -6,11 +6,11 @@ function createOrUpdateMilestone(project, data) {
   return model.Milestone.createOrUpdate(util.setProp('project', project, data));
 }
 
-function onIssueOpened(prj, event) {
+function handleIssueEvent(prj, event) {
   const data = event.issue;
   const assigneeData = data.assignee;
   const milestoneData = data.milestone;
-  console.log('onIssueOpened', data.html_url);
+  console.log('handling event of issue', data.html_url);
 
   const ps = [
     // project
@@ -33,12 +33,18 @@ function onIssueOpened(prj, event) {
       data.milestone = milestone;
       return model.Issue.createOrUpdate(data);
     }).then(function (issue) {
-      console.log('issue created', issue.get('url'));
+      console.log('issue created/updated', issue.get('url'));
     });
 }
 
 const eventHandlers = {
-  opened: onIssueOpened,
+  opened: handleIssueEvent,
+  assigned: handleIssueEvent,
+  unassigned: handleIssueEvent,
+  labeled: handleIssueEvent,
+  unlabeled: handleIssueEvent,
+  closed: handleIssueEvent,
+  reopened: handleIssueEvent,
 };
 
 function onIssuesEvent(prjId, event) {
