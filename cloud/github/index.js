@@ -89,7 +89,21 @@ function createWebhook(accessToken, repoName, webhookUrl) {
     .spread(R.nthArg(0));
 }
 
+/**
+ * Applying labels on issue
+ */
+function applyLabels(accessToken, labels, issueInfo) {
+  const repoName = issueInfo.repoFullName;
+  const issueNum = issueInfo.issueNumber;
+  const path = '/repos/' + repoName + '/issues/' + issueNum + '/labels';
+
+  console.log('applying labels back to GitHub issue', repoName, issueNum, labels);
+  const ghClient = gh.client(accessToken);
+  return Q.ninvoke(ghClient, 'post', path, labels).spread(R.nthArg(1));
+}
+
 exports.listAllRepos = listAllRepos;
 exports.listUserRepos = listUserRepos;
 exports.getRepo = getRepo;
 exports.createWebhook = createWebhook;
+exports.applyLabels = applyLabels;

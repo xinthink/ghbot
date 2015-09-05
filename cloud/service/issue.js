@@ -1,6 +1,9 @@
 const Q = require('q');
+const R = require('ramda');
+
 const model = require('cloud/model');
 const util = require('cloud/util');
+const gh = require('cloud/github');
 
 function createOrUpdateMilestone(project, data) {
   return model.Milestone.createOrUpdate(util.setProp('project', project, data));
@@ -73,18 +76,28 @@ function tagRefIssue(tags, issueInfo) {
 }
 
 /**
- * Appling tags to the given issue.
- * @param refPrf [Project] the project which the issue belongs to, or just referenced by
+ * Applying tags to the given issue.
+ * @param refPrj [Project] the project which the issue belongs to, or just referenced by
  */
 function tagIssue(refPrj, tags, issueInfo) {
   console.log('tagging issue prj#%s', refPrj.id, issueInfo, tags);
-
+  var p;
   if (issueInfo.repoFullName) {
     // the issue is from another repo
-    return tagRefIssue(tags, issueInfo);
+    p = tagRefIssue(tags, issueInfo);
   } else {
-    return model.Issue.tagIssueByNumber(refPrj, tags, issueInfo.issueNumber);
+    p = model.Issue.tagIssueByNumber(refPrj, tags, issueInfo.issueNumber);
   }
+
+  return p.then(function () {
+    // applying labels back to GitHub issue
+    var info = issueInfo;
+    if (!issueInfo.repoFullName) {
+      info = R.assoc('repoFullName', refPrj.get('name'), issueInfo);
+    }
+
+    gh.applyLabels(refPrj.get('ghAccessToken'), tags, info);
+  });
 }
 
 exports.onIssuesEvent = onIssuesEvent;

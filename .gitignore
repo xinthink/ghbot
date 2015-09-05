@@ -8,3 +8,6 @@ npm-debug.log
 
 *.bak
 local.js
+
+# WebStorm
+.idea
