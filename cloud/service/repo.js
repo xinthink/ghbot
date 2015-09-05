@@ -23,6 +23,8 @@ function bindRepo(req, res) {
 
   gh.getRepo(accessToken, repoName)
     .then(function (repo) {
+      repo.accessToken = accessToken;
+      repo.refreshToken = req.user.refreshToken;
       return model.Project.createByRepo(repo);
     })
     .then(function (p) {

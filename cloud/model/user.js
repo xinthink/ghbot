@@ -6,17 +6,32 @@ const User = AV.Object.extend('_User', {
   update: function (data) {
     this.set('ghId', data.id);
     this.set('username', data.login);
-    this.set('displayName', data.login);
+    this.set('displayName', data.name || data.login);
     this.set('avatarUrl', data.avatar_url);
     this.set('url', data.html_url);
-    this.set('project', data.project);
     this.set('password', '123456');
+
+    if (data.email) {
+      this.set('email', data.email);
+    }
+
+    if (data.accessToken) {
+      this.set('ghAccessToken', data.accessToken);
+    }
+
+    if (data.refreshToken) {
+      this.set('ghRefreshToken', data.refreshToken);
+    }
+
     return this.save();
   },
 
 }, {
   // static methods
 
+  findById: function (uid) {
+    return new AV.Query(User).get(uid);
+  },
 
   createOrUpdate: function (data) {
     if (!data) {

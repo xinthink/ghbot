@@ -8,6 +8,7 @@ const GitHubStrategy = require('passport-github').Strategy;
 const app = express();
 
 const localCfg = require('cloud/local');
+const User = require('cloud/model/user');
 
 // App 全局配置
 app.set('views', 'cloud/views');   // 设置模板目录
@@ -27,11 +28,19 @@ app.use(passport.session());
 //   To support persistent login sessions, Passport needs to be able to
 //   serialize users into and deserialize users out of the session.
 passport.serializeUser(function(user, done) {
-  done(null, user);
+  User.createOrUpdate(user).then(function (savedUser) {
+    done(null, savedUser.id);
+  }, done);
 });
 
 passport.deserializeUser(function(obj, done) {
-  done(null, obj);
+  const uid = (obj || {}).id || obj;
+  User.findById(uid).then(function (user) {
+    user.username = user.get('username');
+    user.accessToken = user.get('ghAccessToken');
+    user.refreshToken = user.get('ghRefreshToken');
+    done(null, user);
+  }, done);
 });
 
 
@@ -45,9 +54,9 @@ passport.use(new GitHubStrategy({
     callbackURL: localCfg.gh_oauth_callback_url,
   }, function(accessToken, refreshToken, profile, done) {
     // console.log('GitHub oauth done', accessToken, refreshToken, profile);
-    profile.accessToken = accessToken;
-    profile.refreshToken = refreshToken;
-    done(null, profile);
+    profile._json.accessToken = accessToken;
+    profile._json.refreshToken = refreshToken;
+    done(null, profile._json);
   }
 ));
 

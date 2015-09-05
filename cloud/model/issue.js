@@ -8,10 +8,12 @@ function hasLabel(pattern, issue) {
   }, issue.get('labels') || []);
 }
 
+function isClosed(issue) {
+  return /^closed$/i.test(issue.get('status'));
+}
+
 function isDone(issue) {
-  const closed = /^closed$/i.test(issue.get('status'));
-  const done = hasLabel('done', issue);
-  return closed || done;
+  return isClosed(issue) || hasLabel('done', issue);
 }
 
 const Issue = AV.Object.extend('Issue', {
@@ -27,8 +29,11 @@ const Issue = AV.Object.extend('Issue', {
 
     // type & status
     this.set('labels', data.labels);
-    this.set('status', this.isDone() ? 'done' : data.state);
     this.set('type', this.hasLabel('bug') ? 'bug' : 'task');
+    this.set('status', data.state);
+    if (this.isDoneButNotClosed()) {
+      this.set('status', 'done');
+    }
 
     // relationship
     this.set('project', data.project);
@@ -38,8 +43,16 @@ const Issue = AV.Object.extend('Issue', {
     return this.save();
   },
 
+  isClosed: function () {
+    return isClosed(this);
+  },
+
   isDone: function () {
     return isDone(this);
+  },
+
+  isDoneButNotClosed: function () {
+    return !this.isClosed() && hasLabel('done', this);
   },
 
   hasLabel: function (pattern) {

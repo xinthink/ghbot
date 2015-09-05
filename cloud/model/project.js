@@ -26,17 +26,15 @@ const Project = AV.Object.extend('Project', {
     return new AV.Query(Project)
       .equalTo('name', repo.full_name)
       .first()
-      .then(function (existPrj) {
-        if (!existPrj) {
-          const prj = new Project();
-          prj.set('name', repo.full_name);
-          prj.set('url', repo.html_url);
-          prj.set('shortName', getShortName(repo));
-          prj.set('webhookToken', generateWebhookToken(repo));
-          return prj.save();
-        }
-
-        return existPrj;
+      .then(function (prj) {
+        prj = prj || new Project();
+        prj.set('name', repo.full_name);
+        prj.set('url', repo.html_url);
+        prj.set('shortName', getShortName(repo));
+        prj.set('webhookToken', generateWebhookToken(repo));
+        prj.set('ghAccessToken', repo.accessToken);
+        prj.set('ghRefreshToken', repo.refreshToken);
+        return prj.save();
       });
   },
 
