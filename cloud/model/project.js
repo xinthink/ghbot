@@ -19,6 +19,14 @@ const Project = AV.Object.extend('Project', {
 }, {
   // static methods
 
+  findById: function (pid) {
+    return new AV.Query(Project).get(pid);
+  },
+
+  findByName: function (name) {
+    return new AV.Query(Project).equalTo('name', name).first();
+  },
+
   /**
    * Create project bound to the repo
    */

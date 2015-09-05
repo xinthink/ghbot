@@ -70,6 +70,21 @@ const Issue = AV.Object.extend('Issue', {
         return (issue || new Issue()).update(data);
       });
   },
+
+  tagIssueByNumber: function(prj, tags, issueNumber) {
+    return new AV.Query(Issue)
+      .equalTo('project', prj)
+      .equalTo('number', issueNumber)
+      .first()
+      .then(function (issue) {
+        if (issue) {
+          tags.forEach(function (tag) {
+            issue.addUnique('labels', {name: tag});
+          });
+          return issue.save();
+        }
+      });
+  },
 });
 
 module.exports = Issue;

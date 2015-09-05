@@ -60,4 +60,32 @@ function onIssuesEvent(prjId, event) {
   }
 }
 
+function tagRefIssue(tags, issueInfo) {
+  const repoName = issueInfo.repoFullName;
+  const issueNum = issueInfo.issueNumber;
+
+  return model.Project.findByName(repoName)
+    .then(function (prj) {
+      if (prj) {
+        return model.Issue.tagIssueByNumber(prj, tags, issueNum);
+      }
+    });
+}
+
+/**
+ * Appling tags to the given issue.
+ * @param refPrf [Project] the project which the issue belongs to, or just referenced by
+ */
+function tagIssue(refPrj, tags, issueInfo) {
+  console.log('tagging issue prj#%s', refPrj.id, issueInfo, tags);
+
+  if (issueInfo.repoFullName) {
+    // the issue is from another repo
+    return tagRefIssue(tags, issueInfo);
+  } else {
+    return model.Issue.tagIssueByNumber(refPrj, tags, issueInfo.issueNumber);
+  }
+}
+
 exports.onIssuesEvent = onIssuesEvent;
+exports.tagIssue = tagIssue;

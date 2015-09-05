@@ -1,5 +1,6 @@
 const util = require('cloud/util');
 const issueSvc = require('cloud/service').issue;
+const pushHandler = require('cloud/webhook/push');
 
 /**
  * Handle GitHub events.
@@ -16,6 +17,9 @@ function onGitHubEvents(req, res) {
   switch (eventName) {
     case 'issues':
       issueSvc.onIssuesEvent(id, event);
+      break;
+    case 'push':
+      pushHandler.onPush(id, event);
       break;
     default:
       console.log('ignored event', eventName);
