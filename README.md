@@ -1,1 +1,1 @@
-Cloud code project for gh-pm. Cloud Code Guide: https://cn.avoscloud.com/docs/cloud_code_guide.html
+GitHub bot automating project management tasks using GitHub issues.
