@@ -13,6 +13,8 @@
 - `t:done #1, #7, and t:demo,draft #10` 允许多指令
 - 支持引用别的repo，如 `t:done user/repo#3`
 
+**Note**: 如果想避免GitHub自动关闭该issue，请在commit message中避免使用[这些单词](https://help.github.com/articles/closing-issues-via-commit-messages/#keywords-for-closing-issues)。
+
 ## Get started
 
 1. 访问[此网址][ghbot]，授权ghbot访问你的repo，需要写权限以便自动设置[`Webhook`][gh-doc-webhook]
