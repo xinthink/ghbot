@@ -32,8 +32,10 @@
 
 ## Todo
 
-### 周报、下周计划
-### 与[Todoist][]同步
-### 自动监听org的新repo
+- [Burn down chart][burndown-chart-wk]等项目管理图表
+- 周报、下周计划
+- 与[Todoist][]同步
+- 自动监听org的新repo
 
+[burndown-chart-wk]: https://en.wikipedia.org/wiki/Burn_down_chart
 [Todoist]: https://todoist.com/overview
