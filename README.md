@@ -4,6 +4,9 @@
 
 ### 通过commit message为issue打label
 在commit message包含一定格式的指令，即可为issue打上各种label。
+![label-demo][]
+
+[label-demo]: https://cloud.githubusercontent.com/assets/390805/9703858/a342fde6-54c2-11e5-9703-e9397637d073.png
 
 - `Labeling feature t:done #1` 将issue 1标记为`done`
 - `This commit t:done,task #1, #7` 将issue 1和7标记为`done`和`task`
