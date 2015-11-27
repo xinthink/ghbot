@@ -32,6 +32,7 @@
 
 ## Todo
 
+- 类似[mention-bot](https://github.com/facebook/mention-bot)的功能
 - [Burn down chart][burndown-chart-wk]等项目管理图表
 - 周报、下周计划
 - 与[Todoist][]同步
